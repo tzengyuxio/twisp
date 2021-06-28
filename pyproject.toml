@@ -1,0 +1,12 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "twisp"
+author = "Tzeng Yuxio"
+author-email = "tzeng.yuxio@gmail.com"
+home-page = "https://github.com/tzengyuxio/twisp"
+classifiers = [ "License :: OSI Approved :: MIT License",]
+description-file = "README.md"
+
