@@ -4,6 +4,8 @@ from datetime import datetime
 import tika
 from tika import parser
 from .utils import minguo_to_ad, Transaction
+from rich.console import Console
+from rich.table import Table
 
 row_pattern = r"^(\d{3}/\d{2}/\d{2}) (\d{3}/\d{2}/\d{2})\s(.*\n?.*)\s{1,2}(-?\d+(?:,\d{3})*(?:\.\d+)?) (\d{4})? ([A-Z]{2})? ([A-Z]{3})? (\d+(?:,\d{3})*(?:\.\d+)?)?\s?$"
 
@@ -15,7 +17,7 @@ def pdf_to_text_tika(filename):
 def liberate_data_table(text):
     rows = []
     m = re.search(r'卡號末四碼:(\d{4})', text)
-    card_no = m.group(0)
+    card_no = m.group(1)
     text = re.sub(
         r"^(\d{3}/\d{2}/\d{2} \d{3}/\d{2}/\d{2})", r"\n\1", text, flags=re.MULTILINE
     )
@@ -64,5 +66,23 @@ class CreditCardParser:
     def extract(filename):
         text = pdf_to_text_tika(filename)
         rows = liberate_data_table(text)
-        for r in rows:
-            print(r)
+
+        table = Table(title="電子帳單")
+        table.add_column("No.", justify="right")
+        table.add_column("消費日", style="cyan", no_wrap=True)
+        table.add_column("入帳日", style="magenta", no_wrap=True)
+        table.add_column("交易項目")
+        table.add_column("地區", justify="center")
+        table.add_column("金額", justify="right")
+        table.add_column("折算日")
+        table.add_column("幣別", justify="center")
+        table.add_column("外幣金額", justify="right")
+        table.add_column("卡號")
+        for idx, r in enumerate(rows):
+            row_no = str(idx+1)
+            d1 = r.trans_date.isoformat() if r.trans_date  else ""
+            d2 = r.post_date.isoformat() if r.post_date else ""
+            d3 = r.convert_date.isoformat() if r.convert_date else ""
+            table.add_row(row_no, d1, d2, r.description, r.country_area, r.amount, d3, r.foreign_currency, r.foreign_currency_amount, r.card_no)
+        console = Console()
+        console.print(table)
