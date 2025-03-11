@@ -1,16 +1,22 @@
+[tool.poetry]
+name = "twisp"
+version = "0.1.0"
+description = ""
+authors = ["Tzeng Yuxio <tzengyuxio@gmail.com>"]
+maintainers = ["Tzeng Yuxio <tzengyuxio@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+tika = "^1.24"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+tox = "^3.23.1"
+
 [build-system]
-requires = ["flit_core >=2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.flit.metadata]
-module = "twisp"
-author = "Tzeng Yuxio"
-author-email = "tzeng.yuxio@gmail.com"
-home-page = "https://github.com/tzengyuxio/twisp"
-classifiers = [ "License :: OSI Approved :: MIT License",]
-description-file = "README.md"
-requires-python = ">=3.6"
-requires = [
-    "tika",
-]
-
+[tool.poetry.scripts]
+twisp = 'twisp:main'
